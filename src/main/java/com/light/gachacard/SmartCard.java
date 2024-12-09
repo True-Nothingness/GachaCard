@@ -10,6 +10,9 @@ import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import org.controlsfx.control.Notifications;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.util.Duration;
 /**
  *
  * @author Admin
@@ -32,6 +35,9 @@ public class SmartCard {
     }
     
     public boolean connectCard(){
+        ImageView imageView = new ImageView(new Image(getClass().getResource("images/Fou.png").toExternalForm()));
+        imageView.setFitHeight(50);
+        imageView.setFitWidth(50);
         try{
             factory = TerminalFactory.getDefault();
             terminals = factory.terminals().list();
@@ -48,9 +54,12 @@ public class SmartCard {
                     Notifications.create()
                     .title("Success")
                     .text("Card has been connected!")
+                    .graphic(imageView)
+                    .hideAfter(Duration.seconds(2))
+                    .darkStyle()
                     .position(Pos.CENTER)
                     .owner(context) // Associate the notification with the context
-                    .showInformation();
+                    .show();
                 });
                 return true;
             } else if (check.equals("6400")){
@@ -58,9 +67,12 @@ public class SmartCard {
                     Notifications.create()
                     .title("Failure")
                     .text("Card has been disabled!")
+                    .graphic(imageView)
+                    .hideAfter(Duration.seconds(2))
+                    .darkStyle()
                     .position(Pos.CENTER)
                     .owner(context) // Associate the notification with the context
-                    .showInformation();
+                    .show();
                 });
                 return true;
             } else{

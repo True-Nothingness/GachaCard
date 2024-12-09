@@ -1,0 +1,43 @@
+@font-face {
+    font-family: "FGOFont";
+    src: url("fonts/D.ttf");
+}
+@font-face {
+    font-family: "Garamond";
+    src: url("fonts/G.ttf");
+}
+.root {
+    -fx-background-image: url("bg/SecondScreen.png");
+    -fx-background-size: cover;
+}
+.label{
+    -fx-font-family: "Garamond"; 
+    -fx-font-size: 33px;
+    -fx-effect: dropshadow(gaussian, white, 2, 1.0, 0, 0);
+}
+.password-field{
+    -fx-background-image: url("bg/field.png");
+    -fx-background-repeat: no-repeat; 
+    -fx-background-position: center; 
+    -fx-background-size: stretch; 
+    -fx-text-fill: white; 
+    -fx-font-family: "FGOFont";
+    -fx-font-size: 24px;
+    -fx-border-color: transparent;
+}
+.text-field .text {
+    -fx-caret-color: lightblue;
+}
+.button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white; 
+    -fx-font-family: "FGOFont"; 
+    -fx-font-size: 24px;
+    -fx-effect: dropshadow(gaussian, rgb(80, 164, 255), 2, 1.0, 0, 0);
+}
+
+.button:hover {
+    -fx-background-color: transparent;
+    -fx-text-fill: lightblue;
+    -fx-effect: dropshadow(gaussian, white, 3, 1.0, 0, 0);
+}

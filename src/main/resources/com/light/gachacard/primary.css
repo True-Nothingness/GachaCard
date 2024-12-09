@@ -1,0 +1,23 @@
+@font-face {
+    font-family: "FGOFont";
+    src: url("fonts/D.ttf");
+}
+
+.root {
+    -fx-background-image: url("bg/MainScreen.jpg");
+    -fx-background-size: cover;
+}
+
+.button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white; 
+    -fx-font-family: "FGOFont"; 
+    -fx-font-size: 30px;
+    -fx-effect: dropshadow(gaussian, rgb(80, 164, 255), 2, 1.0, 0, 0);
+}
+
+.button:hover {
+    -fx-background-color: transparent;
+    -fx-text-fill: lightblue;
+    -fx-effect: dropshadow(gaussian, white, 3, 1.0, 0, 0);
+}
