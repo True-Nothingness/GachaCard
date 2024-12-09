@@ -10,7 +10,7 @@
     -fx-background-image: url("bg/SecondScreen.png");
     -fx-background-size: cover;
 }
-.label{
+#title{
     -fx-font-family: "Garamond"; 
     -fx-font-size: 33px;
     -fx-effect: dropshadow(gaussian, white, 2, 1.0, 0, 0);

@@ -31,16 +31,19 @@ public class App extends Application {
         return result;
     }
     
+    static boolean verifyPIN(String pin){
+        boolean result = smartCard.verifyPIN(pin);
+        return result;
+    }
+    
+    static boolean disconnectCard(){
+        boolean result = smartCard.disconnectCard();
+        return result;
+    }
     static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
         scene.getStylesheets().clear();
-
-        // Load the appropriate stylesheet for the screen
-        if (fxml.equals("secondary")) {
-            scene.getStylesheets().add(App.class.getResource("secondary.css").toExternalForm());
-        } else if (fxml.equals("primary")) {
-            scene.getStylesheets().add(App.class.getResource("primary.css").toExternalForm());
-        }
+        scene.getStylesheets().add(App.class.getResource(fxml+".css").toExternalForm());
     }
 
     public static Parent loadFXML(String fxml) throws IOException {
