@@ -176,6 +176,90 @@ public class SmartCard {
         return false;
     }
 }
+public boolean verifyPIN(String newPin, String oldPin) {
+    // Prepare success and error images
+    ImageView imageView = new ImageView(new Image(getClass().getResource("images/Correct.png").toExternalForm()));
+    imageView.setFitHeight(60);
+    imageView.setFitWidth(60);
+
+    ImageView imageView2 = new ImageView(new Image(getClass().getResource("images/Incorrect.png").toExternalForm()));
+    imageView2.setFitHeight(60);
+    imageView2.setFitWidth(60);
+
+    try {
+        // Convert the PIN string into a byte array of numeric values
+        byte[] pinBytes = new byte[oldPin.length()];
+        for (int i = 0; i < oldPin.length(); i++) {
+            pinBytes[i] = (byte) (pin.charAt(i) - '0'); // Convert char to numeric value
+        }
+byte[] pinBytes2 = new byte[newPin.length()];
+        for (int i = 0; i < newPin.length(); i++) {
+            pinBytes2[i] = (byte) (pin.charAt(i) - '0'); // Convert char to numeric value
+        }
+        // Create a Command APDU with INS 0x20 for PIN verification
+        CommandAPDU commandAPDU = new CommandAPDU(0x00, 0x24, 0x00, 0x00, pinBytes + pinBytes2);
+
+        // Transmit the command to the card
+        ResponseAPDU response = channel.transmit(commandAPDU);
+
+        // Parse the response status word
+        String statusWord = Integer.toHexString(response.getSW());
+
+        if ("9000".equals(statusWord)) {
+            Platform.runLater(() -> {
+                Notifications.create()
+                    .title("PIN Changed")
+                    .text("PIN change successful!")
+                    .graphic(imageView)
+                    .hideAfter(Duration.seconds(2))
+                    .darkStyle()
+                    .position(Pos.CENTER)
+                    .owner(context)
+                    .show();
+            });
+            return true;
+        } else if ("6982".equals(statusWord)) {
+            Platform.runLater(() -> {
+                Notifications.create()
+                    .title("PIN Change Failed")
+                    .text("Incorrect PIN!")
+                    .hideAfter(Duration.seconds(2))
+                    .graphic(imageView2)
+                    .darkStyle()
+                    .position(Pos.CENTER)
+                    .owner(context)
+                    .show();
+            });
+            return false;
+        } else {
+            Platform.runLater(() -> {
+                Notifications.create()
+                    .title("PIN Change Error")
+                    .text("Unexpected response: " + statusWord)
+                    .hideAfter(Duration.seconds(2))
+                    .graphic(imageView2)
+                    .darkStyle()
+                    .position(Pos.CENTER)
+                    .owner(context)
+                    .show();
+            });
+            return false;
+        }
+    } catch (Exception e) {
+        Platform.runLater(() -> {
+            Notifications.create()
+                .title("Error")
+                .text("An error occurred during PIN change.")
+                .hideAfter(Duration.seconds(2))
+                .graphic(imageView2)
+                .darkStyle()
+                .position(Pos.CENTER)
+                .owner(context)
+                .show();
+        });
+        return false;
+    }
+}
     public boolean disconnectCard() {
         ImageView imageView = new ImageView(new Image(getClass().getResource("images/quit.png").toExternalForm()));
         imageView.setFitHeight(60);
