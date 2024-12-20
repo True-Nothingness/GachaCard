@@ -176,7 +176,7 @@ public class SmartCard {
         return false;
     }
 }
-public boolean verifyPIN(String newPin, String oldPin) {
+public boolean changePIN(String pin) {
     // Prepare success and error images
     ImageView imageView = new ImageView(new Image(getClass().getResource("images/Correct.png").toExternalForm()));
     imageView.setFitHeight(60);
@@ -188,16 +188,12 @@ public boolean verifyPIN(String newPin, String oldPin) {
 
     try {
         // Convert the PIN string into a byte array of numeric values
-        byte[] pinBytes = new byte[oldPin.length()];
-        for (int i = 0; i < oldPin.length(); i++) {
+        byte[] pinBytes = new byte[pin.length()];
+        for (int i = 0; i < pin.length(); i++) {
             pinBytes[i] = (byte) (pin.charAt(i) - '0'); // Convert char to numeric value
         }
-byte[] pinBytes2 = new byte[newPin.length()];
-        for (int i = 0; i < newPin.length(); i++) {
-            pinBytes2[i] = (byte) (pin.charAt(i) - '0'); // Convert char to numeric value
-        }
         // Create a Command APDU with INS 0x20 for PIN verification
-        CommandAPDU commandAPDU = new CommandAPDU(0x00, 0x24, 0x00, 0x00, pinBytes + pinBytes2);
+        CommandAPDU commandAPDU = new CommandAPDU(0x00, 0x24, 0x00, 0x00, pinBytes);
 
         // Transmit the command to the card
         ResponseAPDU response = channel.transmit(commandAPDU);

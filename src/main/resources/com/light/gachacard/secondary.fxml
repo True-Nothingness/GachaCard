@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="576.0" prefWidth="1024.0" spacing="20.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.light.gachacard.SecondaryController">
+<VBox alignment="CENTER" prefHeight="576.0" prefWidth="1024.0" spacing="20.0" stylesheets="@secondary.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.light.gachacard.SecondaryController">
     <children>
         <Label fx:id="title" alignment="CENTER" contentDisplay="CENTER" text="Enter your PIN" textAlignment="CENTER" textFill="#274bfb">
          <font>

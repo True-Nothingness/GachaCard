@@ -49,3 +49,23 @@
 .button:hover {
     -fx-effect: dropshadow(gaussian, black, 5, 0.5, 0, 0);
 }
+.text-field{
+    -fx-background-image: url("bg/field.png");
+    -fx-background-repeat: no-repeat; 
+    -fx-background-position: center; 
+    -fx-background-size: stretch; 
+    -fx-text-fill: white; 
+    -fx-font-family: "FGOFont";
+    -fx-font-size: 24px;
+    -fx-border-color: transparent;
+}
+#nameField{
+    -fx-background-image: url("bg/holder.png");
+    -fx-background-repeat: no-repeat; 
+    -fx-background-position: center; 
+    -fx-background-size: stretch; 
+    -fx-text-fill: black; 
+    -fx-font-family: "FGOFont";
+    -fx-font-size: 26px;
+    -fx-border-color: transparent;
+}
