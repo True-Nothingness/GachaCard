@@ -11,11 +11,11 @@ public class PrimaryController {
 
     @FXML
     private void switchToSecondary() throws IOException {
-        App.setRoot("secondary");
+        App.setRootWithVFX("secondary");
     }
     @FXML
     private void switchToInit() throws IOException {
-        App.setRoot("init");
+        App.setRootWithVFX("init");
     }
     @FXML
     private void connectCard() throws IOException{

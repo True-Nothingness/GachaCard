@@ -54,3 +54,9 @@
     -fx-text-fill: lightblue;
     -fx-effect: dropshadow(gaussian, white, 3, 1.0, 0, 0);
 }
+#avatarContainer{
+    -fx-background-image: url("images/select.jpg");
+    -fx-background-size: cover;
+    -fx-border-color: gold;
+    -fx-border-width: 5px;
+}

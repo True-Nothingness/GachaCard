@@ -6,10 +6,12 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 
 <AnchorPane prefHeight="576.0" prefWidth="1024.0" stylesheets="@home.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.light.gachacard.HomeController">
    <children>
-      <TextField layoutX="-9.0" layoutY="51.0" prefWidth="180.0" text="DD/MM/YYYY" />
+	<TextField fx:id="SQField" editable="false" focusTraversable="false" layoutX="-10.0" layoutY="99.0" prefHeight="54.0" prefWidth="180.0" text="30" />
+      <TextField fx:id="dateField" editable="false" focusTraversable="false" layoutX="-9.0" layoutY="51.0" prefWidth="180.0" text="DD/MM/YYYY" />
       <ImageView fitHeight="192.0" fitWidth="1026.0" layoutX="-1.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@images/bar.png" />
@@ -29,17 +31,27 @@
             <Glow />
          </effect>
       </Button>
-      <Button fx:id="PINButton" alignment="BOTTOM_CENTER" layoutX="720.0" layoutY="474.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" text="PIN">
+      <Button fx:id="PINButton" alignment="BOTTOM_CENTER" layoutX="720.0" layoutY="474.0" mnemonicParsing="false" onAction="#switchToPIN" prefHeight="100.0" prefWidth="100.0" text="PIN">
          <effect>
             <Glow />
          </effect>
       </Button>
-      <Button fx:id="buyButton" alignment="BOTTOM_CENTER" layoutX="560.0" layoutY="474.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" text="Shop">
+      <Button fx:id="buyButton" alignment="BOTTOM_CENTER" layoutX="560.0" layoutY="474.0" mnemonicParsing="false" onAction="#switchToShop" prefHeight="100.0" prefWidth="100.0" text="Shop">
          <effect>
             <Glow />
          </effect>
       </Button>
       <Button fx:id="quitButton" layoutX="908.0" layoutY="414.0" mnemonicParsing="false" onAction="#quit" prefHeight="30.0" prefWidth="100.0" text="Quit" />
-      <TextField fx:id="nameField" alignment="BOTTOM_LEFT" layoutX="-12.0" prefWidth="250.0" text="Username" />
+      <TextField fx:id="nameField" alignment="BOTTOM_LEFT" editable="false" focusTraversable="false" layoutX="-12.0" prefWidth="250.0" text="Username" />
+      <ImageView fitHeight="48.0" fitWidth="48.0" layoutX="126.0" layoutY="102.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/sq.png" />
+         </image>
+      </ImageView>
+      <StackPane fx:id="avatarContainer" layoutX="-1.0" layoutY="153.0" prefHeight="150.0" prefWidth="150.0">
+         <children>
+            <ImageView fx:id="avatarImage" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </StackPane>
    </children>
 </AnchorPane>

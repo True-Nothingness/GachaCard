@@ -13,11 +13,11 @@ public class SecondaryController {
     private PasswordField inputPIN;
     @FXML
     private void switchToPrimary() throws IOException {
-        App.setRoot("primary");
+        App.setRootWithVFX("primary");
     }
     @FXML
     private void switchToHome() throws IOException {
-        App.setRoot("home");
+        App.setRootWithVFX("home");
     }
     @FXML
     private void pinInput() throws IOException {

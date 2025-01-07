@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="576.0" prefWidth="1024.0" stylesheets="@pin.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.light.gachacard.PinController">
+   <children>
+      <TextField fx:id="SQField" editable="false" focusTraversable="false" layoutX="-10.0" layoutY="99.0" prefHeight="54.0" prefWidth="180.0" text="30" />
+      <TextField fx:id="dateField" editable="false" focusTraversable="false" layoutX="-9.0" layoutY="51.0" prefWidth="180.0" text="DD/MM/YYYY" />
+      <ImageView fitHeight="192.0" fitWidth="1026.0" layoutX="-1.0" layoutY="391.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/bar.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="homeButton" alignment="BOTTOM_CENTER" layoutX="80.0" layoutY="474.0" mnemonicParsing="false" onAction="#switchToHome" prefHeight="100.0" prefWidth="100.0" text="Home">
+         <effect>
+            <Glow />
+         </effect></Button>
+      <Button fx:id="teamButton" alignment="BOTTOM_CENTER" layoutX="240.0" layoutY="474.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" text="Team">
+         <effect>
+            <Glow />
+         </effect>
+      </Button>
+      <Button fx:id="gachaButton" alignment="BOTTOM_CENTER" layoutX="400.0" layoutY="474.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" text="Gacha">
+         <effect>
+            <Glow />
+         </effect>
+      </Button>
+      <Button fx:id="PINButton" alignment="BOTTOM_CENTER" layoutX="720.0" layoutY="474.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" text="PIN">
+         <effect>
+            <Glow />
+         </effect>
+      </Button>
+      <Button fx:id="buyButton" alignment="BOTTOM_CENTER" layoutX="560.0" layoutY="474.0" mnemonicParsing="false" onAction="#switchToShop" prefHeight="100.0" prefWidth="100.0" text="Shop">
+         <effect>
+            <Glow />
+         </effect>
+      </Button>
+      <Button fx:id="quitButton" layoutX="908.0" layoutY="414.0" mnemonicParsing="false" onAction="#quit" prefHeight="30.0" prefWidth="100.0" text="Quit" />
+      <TextField fx:id="nameField" alignment="BOTTOM_LEFT" editable="false" focusTraversable="false" layoutX="-12.0" prefWidth="250.0" text="Username" />
+      <Label fx:id="newPINLabel" layoutX="708.0" layoutY="223.0" text="New PIN">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Label fx:id="confirmPINLabel" layoutX="708.0" layoutY="307.0" text="Confirm PIN">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <PasswordField fx:id="newPINField" layoutX="708.0" layoutY="253.0" />
+      <PasswordField fx:id="confirmPINField" layoutX="708.0" layoutY="337.0" />
+      <PasswordField fx:id="oldPINField" layoutX="708.0" layoutY="169.0" />
+      <Label fx:id="oldPINLabel" layoutX="708.0" layoutY="139.0" text="Old PIN">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
+      <Button fx:id="changePINbtn" layoutX="709.0" layoutY="391.0" mnemonicParsing="false" onAction="#changePIN" text="Change" textAlignment="CENTER" wrapText="true" />
+      <ImageView fitHeight="48.0" fitWidth="48.0" layoutX="126.0" layoutY="102.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/sq.png" />
+         </image>
+      </ImageView>
+   </children>
+</AnchorPane>

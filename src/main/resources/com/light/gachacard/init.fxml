@@ -6,10 +6,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="576.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="com.light.gachacard.InitController">
+<AnchorPane id="AnchorPane" prefHeight="576.0" prefWidth="1024.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.light.gachacard.InitController">
     <stylesheets>
         <URL value="@init.css" />
     </stylesheets>
@@ -23,13 +25,19 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <PasswordField fx:id="PINField" layoutX="482.0" layoutY="200.0" prefWidth="300.0" />
-      <PasswordField fx:id="confirmField" layoutX="482.0" layoutY="298.0" prefWidth="300.0" />
-      <Label layoutX="486.0" layoutY="175.0" text="PIN" />
-      <Label layoutX="486.0" layoutY="273.0" text="Confirm PIN" />
-      <Button fx:id="unlockBtn" layoutX="40.0" layoutY="500.0" mnemonicParsing="false" prefWidth="200.0" text="Unlock Card" />
-      <Button fx:id="initBtn" layoutX="280.0" layoutY="500.0" mnemonicParsing="false" prefWidth="200.0" text="Init Card" />
-      <Button fx:id="resetBtn" layoutX="520.0" layoutY="500.0" mnemonicParsing="false" prefWidth="200.0" text="Reset Card" />
-      <Button fx:id="backBtn" layoutX="760.0" layoutY="500.0" mnemonicParsing="false" prefWidth="200.0" text="Back" />
+      <PasswordField fx:id="PINField" layoutX="443.0" layoutY="200.0" prefWidth="300.0" />
+      <PasswordField fx:id="confirmField" layoutX="443.0" layoutY="298.0" prefWidth="300.0" />
+      <Label layoutX="447.0" layoutY="175.0" text="PIN" />
+      <Label layoutX="447.0" layoutY="273.0" text="Confirm PIN" />
+      <Button fx:id="unlockBtn" layoutX="40.0" layoutY="500.0" mnemonicParsing="false" onAction="#handleUnlockCard" prefWidth="200.0" text="Unlock Card" />
+      <Button fx:id="initBtn" layoutX="280.0" layoutY="500.0" mnemonicParsing="false" onAction="#handleInitCard" prefWidth="200.0" text="Init Card" />
+      <Button fx:id="resetBtn" layoutX="520.0" layoutY="500.0" mnemonicParsing="false" onAction="#handleResetCard" prefWidth="200.0" text="Reset Card" />
+      <Button fx:id="backBtn" layoutX="760.0" layoutY="500.0" mnemonicParsing="false" onAction="#handleBack" prefWidth="200.0" text="Back" />
+      <StackPane fx:id="avatarContainer" layoutX="813.0" layoutY="200.0" prefHeight="150.0" prefWidth="200.0">
+         <children>
+            <ImageView fx:id="avatarImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+         </children>
+      </StackPane>
+      <Label layoutX="813.0" layoutY="175.0" text="Avatar (Select or Drop)" />
    </children>
 </AnchorPane>
