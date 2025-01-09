@@ -1,6 +1,12 @@
 package com.light.gachacard;
 
 import java.io.IOException;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.PauseTransition;
@@ -8,6 +14,11 @@ import javafx.fxml.FXML;
 import javafx.util.Duration;
 import javafx.scene.control.TextField;
 import javafx.application.Platform;
+import javax.smartcardio.CardException;
+import java.security.SecureRandom;
+import java.security.Signature;
+import java.util.Arrays;
+import javafx.scene.control.Alert;
 
 
 public class ShopController {
@@ -23,7 +34,7 @@ public class ShopController {
         try {
             getData();
         } catch (IOException e) {
-            Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(ShopController.class.getName()).log(Level.SEVERE, null, e);
         }
     }
     @FXML
@@ -44,31 +55,42 @@ public class ShopController {
             try {
                 App.setRootWithVFX("primary");
             } catch (IOException ex) {
-                Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ShopController.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
         delay.play();
     }
     }
     @FXML
-    private void smallPack() throws IOException {
+    private void smallPack() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, Exception {
+        if(authRSA()){
         App.addQuartz(3);
         Integer amount = App.getQuartz();
         SQField.setText(String.valueOf(amount));
+        } else {
+             showAlert(Alert.AlertType.ERROR, "Authentication Error", "RSA Authentication Failed!");
+        }
         
     }
     @FXML
-    private void midPack() throws IOException {
+    private void midPack() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, Exception {
+        if(authRSA()){
         App.addQuartz(15);
         Integer amount = App.getQuartz();
         SQField.setText(String.valueOf(amount));
-        
+        } else {
+             showAlert(Alert.AlertType.ERROR, "Authentication Error", "RSA Authentication Failed!");
+        }
     }
     @FXML
-    private void bigPack() throws IOException {
+    private void bigPack() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, Exception {
+        if(authRSA()){
         App.addQuartz(30);
         Integer amount = App.getQuartz();
         SQField.setText(String.valueOf(amount));
+        } else {
+             showAlert(Alert.AlertType.ERROR, "Authentication Error", "RSA Authentication Failed!");
+        }
     }
     @FXML
     private void getData() throws IOException{
@@ -92,8 +114,45 @@ public class ShopController {
     }
 }
 
-private String cleanData(String data) {
-    return data == null ? "" : data.replaceAll("[^\\p{L}\\p{N}\\p{P}\\p{Z}]", "").trim();
+    private String cleanData(String data) {
+        return data == null ? "" : data.replaceAll("[^\\p{L}\\p{N}\\p{P}\\p{Z}]", "").trim();
+    }
+    private boolean authRSA() throws CardException, NoSuchAlgorithmException, InvalidKeySpecException, Exception{
+        Account account = AccountDatabase.getAccountById(App.receiveId());
+        byte[] encodedKey = Base64.getDecoder().decode(account.getKey());
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encodedKey);
+        PublicKey storedPublicKey = keyFactory.generatePublic(keySpec);;
+        byte[] challenge = generateChallenge(64);
+        byte[] signed = App.sendChallengeToCard(challenge);
+        return verifySignature(challenge, signed, storedPublicKey);
+    }
+    private byte[] generateChallenge(int length) {
+        if (length <= 0) {
+            throw new IllegalArgumentException("Challenge length must be positive.");
+        }
+
+        byte[] challenge = new byte[length];
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(challenge);
+        System.out.println(Arrays.toString(challenge));
+        return challenge;
+    }
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+    private boolean verifySignature(byte[] challenge, byte[] signedChallenge, PublicKey storedPublicKey) throws Exception {
+    // Initialize the Signature object with SHA256withRSA
+    Signature signature = Signature.getInstance("SHA256withRSA"); 
+    signature.initVerify(storedPublicKey);
+    signature.update(challenge);
+    System.out.println("Challenge verification done.");
+    // Verify if the signature is correct
+    return signature.verify(signedChallenge);
 }
 
 }

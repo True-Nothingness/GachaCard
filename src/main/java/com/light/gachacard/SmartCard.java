@@ -1,6 +1,7 @@
 package com.light.gachacard;
 
 import java.util.List;
+import java.security.*;
 import javax.smartcardio.*;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -16,6 +17,11 @@ import java.nio.file.Paths;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.File;
+import java.math.BigInteger;
+import java.util.Arrays;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.RSAPublicKeySpec;
 
 public class SmartCard {
     public static final byte[] AID_APPLET = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x00};
@@ -138,6 +144,7 @@ public class SmartCard {
                     .owner(context)
                     .show();
             });
+            genKey();
             return true;
         } else if ("6700".equals(statusWord)) {
             Platform.runLater(() -> {
@@ -181,6 +188,120 @@ public class SmartCard {
         return false;
     }
 }
+    
+    public void sendId(byte id) throws CardException {
+    byte[] formatAPDU = new byte[]{
+        (byte) 0x00, // CLA
+        (byte) 0x44, // INS_RECEIVE_ID
+        (byte) 0x00, // P1
+        (byte) 0x00, // P2
+        (byte) 0x01, // Lc
+        id // Data
+    };
+
+    ResponseAPDU response = channel.transmit(new CommandAPDU(formatAPDU));
+    if (response.getSW() != 0x9000) {
+        throw new CardException("Failed to send id: " + response.getSW());
+    }
+
+    System.out.println("Id sent successfully.");
+}
+    
+    public byte receiveId() throws CardException {
+    byte[] formatAPDU = new byte[]{
+        (byte) 0x00, // CLA
+        (byte) 0x43, // INS_SEND_ID
+        (byte) 0x00, // P1
+        (byte) 0x00, // P2
+        (byte) 0x00  // Lc
+    };
+
+    ResponseAPDU response = channel.transmit(new CommandAPDU(formatAPDU));
+    if (response.getSW() != 0x9000) {
+        throw new CardException("Failed to receive id: " + response.getSW());
+    }
+
+    byte[] data = response.getData();
+    if (data.length != 1) {
+        throw new CardException("Invalid id length received.");
+    }
+
+    System.out.println("Id received successfully: " + data[0]);
+    return data[0];
+}
+    
+    private boolean genKey(){
+        try {
+        // Create a Command APDU with INS 0x20 for PIN verification
+        CommandAPDU commandAPDU = new CommandAPDU(0x00, 0x11, 0x00, 0x00);
+
+        // Transmit the command to the card
+        ResponseAPDU response = channel.transmit(commandAPDU);
+
+        // Parse the response status word
+        String statusWord = Integer.toHexString(response.getSW());
+
+        return "9000".equals(statusWord);
+    } catch (Exception e) {
+        return false;
+    }
+}
+    
+    public PublicKey getPublicKey(){
+        try{
+        // Send APDU to retrieve the public key
+        CommandAPDU commandAPDU = new CommandAPDU(0x00, 0x12, 0x00, 0x00);
+        ResponseAPDU response = channel.transmit(commandAPDU);
+        // Parse the response status word
+            String statusWord = Integer.toHexString(response.getSW());
+
+            if ("9000".equals(statusWord)) {
+                byte[] responseData = response.getData();
+                // Extract modulus length
+                int modulusLength = ((responseData[0] & 0xFF) << 8) | (responseData[1] & 0xFF);
+
+                // Extract modulus
+                byte[] modulus = Arrays.copyOfRange(responseData, 2, 2 + modulusLength);
+
+                // Extract exponent length
+                int exponentLength = ((responseData[2 + modulusLength] & 0xFF) << 8) | (responseData[3 + modulusLength] & 0xFF);
+
+                // Extract exponent
+                byte[] exponent = Arrays.copyOfRange(responseData, 4 + modulusLength, 4 + modulusLength + exponentLength);
+
+                // Convert modulus and exponent to BigInteger and create RSA public key
+                BigInteger modulusBigInt = new BigInteger(1, modulus);
+                BigInteger exponentBigInt = new BigInteger(1, exponent);
+
+                // Create RSA public key
+                KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+                RSAPublicKeySpec publicKeySpec = new RSAPublicKeySpec(modulusBigInt, exponentBigInt);
+                PublicKey storedPublicKey = keyFactory.generatePublic(publicKeySpec);
+                System.out.println(storedPublicKey);
+                return storedPublicKey;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public byte[] sendChallengeToCard(byte[] challenge) throws Exception {
+        // Send challenge to the Java Card to sign it
+        CommandAPDU challengeCommand = new CommandAPDU(0x00, 0x13, 0x00, 0x00, challenge);
+        ResponseAPDU response = channel.transmit(challengeCommand);
+        if (response.getSW() != 0x9000) {
+                throw new CardException("Failed to send challenge: " + response.getSW());
+            }
+        System.out.println("Challenge sent successfully.");
+        // Retrieve signed challenge (signature) from the response
+        byte[] signedChallenge = response.getData();
+        System.out.println(Arrays.toString(signedChallenge));
+        // Return the signed challenge for later verification
+        return signedChallenge;
+    }
+
 
     public boolean sendImage(String imagePath) throws IOException, CardException {
     byte[] imageData = Files.readAllBytes(Paths.get(imagePath));
@@ -226,7 +347,7 @@ public class SmartCard {
     return true;
 }
 
-private void sendFormat(byte formatIndicator) throws CardException {
+    private void sendFormat(byte formatIndicator) throws CardException {
     byte[] formatAPDU = new byte[]{
         (byte) 0x00, // CLA
         (byte) 0x42, // INS_RECEIVE_FORMAT (arbitrary instruction code for format transmission)
@@ -244,7 +365,7 @@ private void sendFormat(byte formatIndicator) throws CardException {
     System.out.println("Format indicator sent successfully.");
 }
 
-private byte receiveFormat() throws CardException {
+    private byte receiveFormat() throws CardException {
     byte[] formatAPDU = new byte[]{
         (byte) 0x00, // CLA
         (byte) 0x41, // INS_SEND_FORMAT
@@ -267,7 +388,7 @@ private byte receiveFormat() throws CardException {
     return data[0];
 }
 
-public Integer receiveImage(String outputDirectory) throws CardException, IOException {
+    public Integer receiveImage(String outputDirectory) throws CardException, IOException {
     byte[] apduData = new byte[] {
         0x00, // CLA
         INS_RECEIVE_IMAGE, // INS

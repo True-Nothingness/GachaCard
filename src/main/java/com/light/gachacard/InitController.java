@@ -15,6 +15,12 @@ import java.io.File;
 import java.nio.file.Paths;
 import java.nio.charset.StandardCharsets;
 import java.io.ByteArrayOutputStream;
+import java.security.PublicKey;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.animation.PauseTransition;
 import javafx.stage.Stage;
 import javafx.scene.layout.StackPane;
 import javafx.scene.image.Image;
@@ -23,6 +29,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
 import javax.smartcardio.CardException;
 
 public class InitController {
@@ -124,7 +131,17 @@ public class InitController {
     // Send the combined data to the Java Card
     if(hasAvatar){
     if (App.initData(combinedBytes)&&App.sendImage(filePath)) {
+        addAccount(username);
         System.out.println("Card initialization was successful!");
+        PauseTransition delay = new PauseTransition(Duration.seconds(3));
+        delay.setOnFinished(event -> {
+            try {
+                switchToSecondary();
+            } catch (IOException ex) {
+                Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        delay.play();
     } else if (!App.sendImage(filePath)){
         System.out.println("Card initialization was successful but avatar initialization failed!");
         showAlert(AlertType.ERROR, "Avatar Init Failure", "Failed to send avatar image to Card!");
@@ -133,13 +150,22 @@ public class InitController {
     }
     } else {
         if (App.initData(combinedBytes)){
+            addAccount(username);
             System.out.println("Card initialization was successful!");
+            PauseTransition delay = new PauseTransition(Duration.seconds(3));
+            delay.setOnFinished(event -> {
+                try {
+                    switchToSecondary();
+                } catch (IOException ex) {
+                    Logger.getLogger(PrimaryController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+            delay.play();
         } else {
             System.out.println("Card initialization failed!");
         }
     }
 }
-
 
     private boolean isValidPIN(String pin) {
         return pin.length() == 6;
@@ -209,5 +235,18 @@ public class InitController {
         } catch (Exception e) {
             System.err.println("Error loading image: " + e.getMessage());
         }
+    }
+    private void addAccount(String username) throws CardException{
+        PublicKey publicKey = App.getPublicKey();
+        byte[] encodedKey = publicKey.getEncoded();
+        // Convert to Base64 for easy storage
+        String encodedKeyBase64 = Base64.getEncoder().encodeToString(encodedKey);
+        Account newAccount = new Account((byte)0, username, encodedKeyBase64);
+        AccountDatabase.insertAccount(newAccount);
+        System.out.println("Inserted account with ID: " + newAccount.getId());
+        App.sendId((byte)(newAccount.getId()));
+    }
+    private void switchToSecondary() throws IOException {
+        App.setRootWithVFX("secondary");
     }
 }

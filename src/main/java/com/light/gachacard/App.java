@@ -6,12 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
-import javafx.animation.TranslateTransition;
 import javafx.animation.Interpolator;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.security.PublicKey;
 import javax.smartcardio.CardException;
 
 /**
@@ -40,6 +39,22 @@ public class App extends Application {
     static boolean initData(byte[] data){
         boolean result = smartCard.initData(data);
         return result;
+    }
+    
+    public static PublicKey getPublicKey(){
+        return smartCard.getPublicKey();
+    }
+    
+    static void sendId(byte id) throws CardException {
+        smartCard.sendId(id);
+    }
+    
+    static byte receiveId() throws CardException {
+        return smartCard.receiveId();
+    }
+    
+    static byte[] sendChallengeToCard(byte[] challenge) throws Exception {
+        return smartCard.sendChallengeToCard(challenge);
     }
     
     static boolean verifyPIN(String pin){
