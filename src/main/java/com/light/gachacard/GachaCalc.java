@@ -113,7 +113,7 @@ public class GachaCalc {
             String name = resultSet.getString("name");
             String avatarPath = resultSet.getString("avatar");
             Image avatar = new Image(getClass().getResourceAsStream("/" + avatarPath));
-            int copyCount = resultSet.getInt("copy_count");
+            int copyCount = 0;
             servantList.add(new Character(charId, name, avatar, copyCount));
         }
     }
