@@ -1,6 +1,7 @@
 package com.light.gachacard;
 
 import java.io.IOException;
+import java.util.Objects;
 import javax.smartcardio.CardException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import java.util.Arrays;
 
 public class HomeController {
     
@@ -88,7 +90,18 @@ public class HomeController {
         String name = cleanData(App.getName());
         String dob = cleanData(App.getDOB());
         Integer amount = App.getQuartz();
-
+        int id = App.receiveId();
+        Integer savedAmount = AccountDatabase.getCurrency(id);
+        if(!Objects.equals(amount, savedAmount)){
+            throw new RuntimeException("Data mismatch detected, stopping the app.");
+        }
+        byte[] servants = App.getServants();
+        byte[] savedServants = AccountDatabase.getServants(id);
+        if (servants != null && savedServants != null) {
+            if (!Arrays.equals(servants, savedServants)) {
+                throw new RuntimeException("Data mismatch detected, stopping the app.");
+            }
+        }
         Platform.runLater(() -> {
             nameField.setText(name);
             dateField.setText(dob);

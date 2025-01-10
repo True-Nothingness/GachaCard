@@ -97,6 +97,7 @@ private String cleanData(String data) {
     @FXML
     private void gacha() throws SQLException, CardException, IOException{
         if(amount>=3){
+        int id = App.receiveId();
         GachaCalc gachaCalc = new GachaCalc();
         List<Character> result = gachaCalc.doHeadhunt(1);
         // Get the single character from the result
@@ -104,6 +105,8 @@ private String cleanData(String data) {
         showGachaNotification(pulledCharacter);
         App.sendServant(pulledCharacter.getCharId());
         getData();
+        AccountDatabase.updateCurrency(id, amount);
+        AccountDatabase.updateServants(id, App.getServants());
         } else {
             showAlert(Alert.AlertType.ERROR, "Insufficient fund", "Must have at least 3 SQ!");
         }

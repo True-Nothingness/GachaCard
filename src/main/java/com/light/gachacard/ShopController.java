@@ -76,6 +76,7 @@ public class ShopController {
         App.addQuartz(3);
         Integer amount = App.getQuartz();
         SQField.setText(String.valueOf(amount));
+        AccountDatabase.updateCurrency(App.receiveId(), amount);
         } else {
              showAlert(Alert.AlertType.ERROR, "Authentication Error", "RSA Authentication Failed!");
         }
@@ -87,6 +88,7 @@ public class ShopController {
         App.addQuartz(15);
         Integer amount = App.getQuartz();
         SQField.setText(String.valueOf(amount));
+        AccountDatabase.updateCurrency(App.receiveId(), amount);
         } else {
              showAlert(Alert.AlertType.ERROR, "Authentication Error", "RSA Authentication Failed!");
         }
@@ -97,6 +99,7 @@ public class ShopController {
         App.addQuartz(30);
         Integer amount = App.getQuartz();
         SQField.setText(String.valueOf(amount));
+        AccountDatabase.updateCurrency(App.receiveId(), amount);
         } else {
              showAlert(Alert.AlertType.ERROR, "Authentication Error", "RSA Authentication Failed!");
         }
