@@ -96,6 +96,14 @@ public class App extends Application {
         return hasAvatar;
     }
     
+    public static void sendServant(int id) throws CardException {
+        smartCard.sendServant(id);
+    }
+    
+    public static byte[] getServants(){
+        return smartCard.getServants();
+    }
+    
     static boolean unlockCard(){
         boolean result = smartCard.unlockCard();
         return result;

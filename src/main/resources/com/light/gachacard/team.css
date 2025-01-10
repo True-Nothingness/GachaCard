@@ -1,0 +1,117 @@
+@font-face {
+    font-family: "FGOFont";
+    src: url("fonts/D.ttf");
+}
+.root {
+    -fx-background-image: url("bg/Home.png");
+    -fx-background-size: cover;
+}
+.button {
+    -fx-background-color: transparent;
+    -fx-border-color: gold;
+    -fx-border-width: 2px;
+    -fx-border-style: solid;
+    -fx-text-fill: rgb(255, 255, 255);
+    -fx-font-size: 24px;
+    -fx-font-family: "FGOFont";
+    -fx-effect: dropshadow(gaussian, gold, 5, 0.5, 0, 0);
+    -fx-shape: "M 50 0 L 100 50 L 50 100 L 0 50 Z"; /* Diamond shape */
+    -fx-padding: 10; /* Adjust padding to keep text within the diamond */
+}
+#homeButton {
+    -fx-background-image: url("images/Back1.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+#teamButton {
+    -fx-background-image: url("images/Avenger.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+#gachaButton {
+    -fx-background-image: url("images/Ruler.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+#buyButton {
+    -fx-background-image: url("images/Foreigner.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+#PINButton {
+    -fx-background-image: url("images/AlterEgo.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+#quitButton:hover {
+    -fx-background-color: rgba(255, 223, 0, 0.5);
+}
+.button:hover {
+    -fx-effect: dropshadow(gaussian, black, 5, 0.5, 0, 0);
+}
+.text-field{
+    -fx-background-image: url("bg/field.png");
+    -fx-background-repeat: no-repeat; 
+    -fx-background-position: center; 
+    -fx-background-size: stretch; 
+    -fx-text-fill: white; 
+    -fx-font-family: "FGOFont";
+    -fx-font-size: 24px;
+    -fx-border-color: transparent;
+}
+#nameField{
+    -fx-background-image: url("bg/holder.png");
+    -fx-background-repeat: no-repeat; 
+    -fx-background-position: center; 
+    -fx-background-size: stretch; 
+    -fx-text-fill: black; 
+    -fx-font-family: "FGOFont";
+    -fx-font-size: 26px;
+    -fx-border-color: transparent;
+}
+.table-view {
+    -fx-background-color: #f0f0f0;
+    -fx-font-family: "FGOFont";
+    -fx-font-size: 14px;
+    -fx-border-width: 2; 
+    -fx-border-color: gold; 
+    -fx-border-radius: 5px; 
+}
+
+.table-view .column-header {
+    -fx-background-color: #4CAF50; 
+    -fx-text-fill: white; 
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #333;
+}
+
+.table-view .table-row-cell:hover {
+    -fx-background-color: #e0e0e0; 
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: #90EE90; 
+}
+
+.table-view .table-cell {
+    -fx-padding: 5px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.table-view .table-cell {
+    -fx-font-size: 12px;
+    -fx-text-fill: #555;
+}
+
+.table-view .column {
+    -fx-alignment: CENTER;
+}
+
+.table-view .table-row-cell:nth-child(even) {
+    -fx-background-color: #f9f9f9;
+}

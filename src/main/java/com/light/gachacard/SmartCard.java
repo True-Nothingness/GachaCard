@@ -595,14 +595,33 @@ public class SmartCard {
 
             if ("9000".equals(statusWord)) {
                 byte[] responseData = response.getData();
-                int value = responseData[0] & 0xFF; // Take only the first byte for "quartz"
-                return value;
+                int currency = ((responseData[0] & 0xFF) << 8) | (responseData[1] & 0xFF);
+                return currency;
             } else {
                 return null;
             }
         } catch (Exception e) {
             return null;
         }
+}
+    
+    public void sendServant(int id) throws CardException {
+    byte[] formatAPDU = new byte[]{
+        (byte) 0x00, // CLA
+        (byte) 0x30, // INS_RECEIVE_ID
+        (byte) 0x00, // P1
+        (byte) 0x00, // P2
+        (byte) 0x02, // Lc (length of data to send, 2 bytes for short)
+        (byte) (id >> 8), // High byte of the int (the most significant byte)
+        (byte) (id & 0xFF) // Low byte of the int (the least significant byte)
+    };
+
+    ResponseAPDU response = channel.transmit(new CommandAPDU(formatAPDU));
+    if (response.getSW() != 0x9000) {
+        throw new CardException("Failed to send servant id: " + response.getSW());
+    }
+
+    System.out.println("Servant id sent successfully.");
 }
     
     public byte[] getServants(){
@@ -626,6 +645,7 @@ public class SmartCard {
             return null;
         }
 }
+    
     public boolean verifyPIN(String pin) {
     // Prepare success and error images
     ImageView imageView = new ImageView(new Image(getClass().getResource("images/Correct.png").toExternalForm()));

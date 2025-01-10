@@ -20,12 +20,12 @@
          <effect>
             <Glow />
          </effect></Button>
-      <Button fx:id="teamButton" alignment="BOTTOM_CENTER" layoutX="240.0" layoutY="474.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" text="Team">
+      <Button fx:id="teamButton" alignment="BOTTOM_CENTER" layoutX="240.0" layoutY="474.0" mnemonicParsing="false" onAction="#switchToTeam" prefHeight="100.0" prefWidth="100.0" text="Team">
          <effect>
             <Glow />
          </effect>
       </Button>
-      <Button fx:id="gachaButton" alignment="BOTTOM_CENTER" layoutX="400.0" layoutY="474.0" mnemonicParsing="false" prefHeight="100.0" prefWidth="100.0" text="Gacha">
+      <Button fx:id="gachaButton" alignment="BOTTOM_CENTER" layoutX="400.0" layoutY="474.0" mnemonicParsing="false" onAction="#switchToGacha" prefHeight="100.0" prefWidth="100.0" text="Gacha">
          <effect>
             <Glow />
          </effect>

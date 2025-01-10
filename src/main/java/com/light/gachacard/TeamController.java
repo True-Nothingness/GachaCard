@@ -1,20 +1,22 @@
 package com.light.gachacard;
 
 import java.io.IOException;
-import javax.smartcardio.CardException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.util.Duration;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
+import javafx.util.Duration;
+import java.util.List;
+import javafx.util.Callback;
+import java.sql.SQLException;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.HBox;
 
-public class HomeController {
-    
+public class TeamController {
     @FXML
     private TextField nameField;
     @FXML
@@ -22,51 +24,46 @@ public class HomeController {
     @FXML
     private TextField SQField;
     @FXML
-    private ImageView avatarImage;
+    private TableView<Character> characterTable;
     @FXML
-    private StackPane avatarContainer;
-
-    private static Integer hasAvatar;
-    private Image image;
-    private static boolean firstTime = true;
+    private TableColumn<Character, Integer> charIdColumn;
+    @FXML
+    private TableColumn<Character, String> nameColumn;
+    @FXML
+    private TableColumn<Character, String> classColumn;
+    @FXML
+    private TableColumn<Character, String> rarityColumn;
+    @FXML
+    private TableColumn<Character, Integer> copyCountColumn;
+    @FXML
+    private TableColumn<Character, HBox> avatarColumn;
     
     @FXML
     public void initialize() {
         try {
-            if(firstTime){
-                hasAvatar = App.receiveImage("D:/Avatar");
-                firstTime = false;
-            }
-        } catch (CardException | IOException e) {
-           Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, e);
-        }
-        try {        
             getData();
-            if(hasAvatar!=0){
-                setAvatar();
-            }
+            getServants();
         } catch (IOException e) {
             Logger.getLogger(HomeController.class.getName()).log(Level.SEVERE, null, e);
         }
     }
-    
     @FXML
-    private void switchToPIN() throws IOException {
-        App.setRoot("pin");
+    private void switchToHome() throws IOException {
+        App.setRoot("home");
     }
     @FXML
     private void switchToShop() throws IOException {
         App.setRoot("shop");
     }
     @FXML
-    private void switchToTeam() throws IOException {
-        App.setRoot("team");
-    }
-    @FXML
     private void switchToGacha() throws IOException {
         App.setRoot("gacha");
     }
-
+    @FXML
+    private void switchToPin() throws IOException {
+        App.setRoot("pin");
+    }
+    
     @FXML
     private void quit() throws IOException {
         boolean result = App.disconnectCard();
@@ -101,43 +98,32 @@ public class HomeController {
             dateField.setText("Error");
             SQField.setText("Error");
         });
-    }
-    }
-    private void setAvatar() {
-    System.out.println("hasAvatar value: " + hasAvatar);
-    String imagePath;
-    switch (hasAvatar) {
-        case 1:
-            imagePath = "file:D:/Avatar/avatar.png";
-            break;
-        case 2:
-            imagePath = "file:D:/Avatar/avatar.jpg";
-            break;
-        default:
-            imagePath = "file:D:/Avatar/avatar.bmp";
-            break;
-    }
-    System.out.println("Image path: " + imagePath);
-
-    try {
-        image = new Image(imagePath, false); // Synchronous loading
-        if (image.isError()) {
-            System.out.println("Error loading image: " + image.getException().getMessage());
         }
-    } catch (Exception e) {
-        e.printStackTrace();
     }
-
-    avatarContainer.setStyle("-fx-border-color: gold;\n" +
-                               "-fx-background-color: white;\n" +
-                               "-fx-border-width: 5px;");
-    avatarImage.setImage(image);
-}
-
-
 
     private String cleanData(String data) {
         return data == null ? "" : data.replaceAll("[^\\p{L}\\p{N}\\p{P}\\p{Z}]", "").trim();
     }
-
+    private void getServants(){
+        byte[] data = App.getServants();
+        try {
+            CharacterParser.initializeDatabase();
+            List<Character> characters = CharacterParser.parseCharacters(data);
+            characterTable.getItems().setAll(characters);
+            
+            nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+            classColumn.setCellValueFactory(cellData -> cellData.getValue().classTypeProperty());
+            rarityColumn.setCellValueFactory(cellData -> cellData.getValue().rarityProperty());
+            copyCountColumn.setCellValueFactory(cellData -> cellData.getValue().copyCountProperty().asObject());
+            avatarColumn.setCellValueFactory((TableColumn.CellDataFeatures<Character, HBox> param) -> {
+                ImageView imageView = new ImageView(param.getValue().getAvatar());
+                imageView.setFitWidth(50);
+                imageView.setFitHeight(50);
+                HBox hBox = new HBox(imageView);
+                return new javafx.beans.property.SimpleObjectProperty<>(hBox);
+            });
+        } catch (SQLException e) {
+            e.printStackTrace();
+}
+    }
 }

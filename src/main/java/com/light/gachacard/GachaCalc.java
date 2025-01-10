@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.light.gachacard;
 
 import java.sql.Connection;
@@ -12,12 +8,10 @@ import java.util.List;
 import java.util.Random;
 import javafx.scene.image.Image;
 
-/**
- *
- * @author tlam2
- */
+
 public class GachaCalc {
     
+    private static final String DB_PATH = "/com/light/gachacard/database/servants.db";
     private static final Random random = new Random();
     private double fiveStarsRate = 2.0;
     private double fourStarsRate = 8.0;
@@ -68,10 +62,10 @@ public class GachaCalc {
         return 2;
     }
     
-    private List<String> doHeadhunt(int times) throws SQLException {
-    List<String> results = new ArrayList<>();
-
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:servants.db")) {
+    public List<Character> doHeadhunt(int times) throws SQLException {
+    List<Character> results = new ArrayList<>();
+    String dbUrl = getClass().getResource(DB_PATH).toExternalForm();
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + dbUrl);) {
             List<Character> fiveStarServants = loadServant(connection, "SSR");
             List<Character> fourStarServants = loadServant(connection, "SR");
             List<Character> threeStarServants = loadServant(connection, "R");
@@ -95,6 +89,7 @@ public class GachaCalc {
                         selectedServant = getRandomServant(twoStarServants);
                         break;
                 }
+                results.add(selectedServant);
             }
         }
 
@@ -103,18 +98,21 @@ public class GachaCalc {
     
     private List<Character> loadServant(Connection connection, String rarity) throws SQLException{
         List<Character> servantList = new ArrayList<>();
-        String query = "SELECT ID, Name, Avatar FROM Servants WHERE  Rarity = ?";
+        String query = "SELECT ID, Name, Class, Avatar FROM Servants WHERE Rarity = ?";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
         statement.setString(1, rarity);
         ResultSet resultSet = statement.executeQuery();
 
         while (resultSet.next()) {
-            int charId = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            String avatarPath = resultSet.getString("avatar");
-            Image avatar = new Image(getClass().getResourceAsStream("/" + avatarPath));
-            int copyCount = 0;
-            servantList.add(new Character(charId, name, avatar, copyCount));
+                    int id = resultSet.getInt("ID");
+                    String name = resultSet.getString("Name");
+                    String classType = resultSet.getString("Class");
+                    System.out.println(classType);
+                    String avatarPath = resultSet.getString("Avatar");
+                    avatarPath = avatarPath.trim();
+                    // Load the avatar image from the file path
+                    Image avatar = new Image(getClass().getResource(avatarPath).toExternalForm());
+            servantList.add(new Character(id, name, classType, rarity, avatar, 0));
         }
     }
     return servantList;

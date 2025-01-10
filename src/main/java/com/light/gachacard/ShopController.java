@@ -46,6 +46,14 @@ public class ShopController {
     private void switchToHome() throws IOException {
         App.setRoot("home");
     }
+    @FXML
+    private void switchToTeam() throws IOException {
+        App.setRoot("team");
+    }
+    @FXML
+    private void switchToGacha() throws IOException {
+        App.setRoot("gacha");
+    }
 
     @FXML
     private void quit() throws IOException {
