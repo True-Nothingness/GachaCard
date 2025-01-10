@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.Base64;
 
 public class SmartCard {
     public static final byte[] AID_APPLET = {0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x00};
@@ -256,18 +257,13 @@ public class SmartCard {
             String statusWord = Integer.toHexString(response.getSW());
 
             if ("9000".equals(statusWord)) {
-                byte[] responseData = response.getData();
-                // Extract modulus length
-                int modulusLength = ((responseData[0] & 0xFF) << 8) | (responseData[1] & 0xFF);
+                byte[] publicKeyData = response.getData();
+                int modulusLength = publicKeyData.length - 3;
+                byte[] modulus = Arrays.copyOfRange(publicKeyData, 0, modulusLength);
+                byte[] exponent = Arrays.copyOfRange(publicKeyData, modulusLength, publicKeyData.length);
 
-                // Extract modulus
-                byte[] modulus = Arrays.copyOfRange(responseData, 2, 2 + modulusLength);
-
-                // Extract exponent length
-                int exponentLength = ((responseData[2 + modulusLength] & 0xFF) << 8) | (responseData[3 + modulusLength] & 0xFF);
-
-                // Extract exponent
-                byte[] exponent = Arrays.copyOfRange(responseData, 4 + modulusLength, 4 + modulusLength + exponentLength);
+                System.out.println("Modulus: " + Base64.getEncoder().encodeToString(modulus));
+                System.out.println("Exponent: " + Base64.getEncoder().encodeToString(exponent));
 
                 // Convert modulus and exponent to BigInteger and create RSA public key
                 BigInteger modulusBigInt = new BigInteger(1, modulus);
@@ -945,12 +941,14 @@ public class SmartCard {
         ImageView imageView3 = new ImageView(new Image(getClass().getResource("images/Incorrect.png").toExternalForm()));
         imageView3.setFitHeight(60);
         imageView3.setFitWidth(60);
-        File avatar = new File(outputFilePath);
     try {
         // Ensure the card is not null and is connected
         if (card != null) {
             card.disconnect(false); // 'false' means no reset of the card
-            avatar.delete();
+            if(hasAvatar!=0){
+                File avatar = new File(outputFilePath);
+                avatar.delete();
+            }
             Platform.runLater(() -> {
                 Notifications.create()
                     .title("Disconnected")

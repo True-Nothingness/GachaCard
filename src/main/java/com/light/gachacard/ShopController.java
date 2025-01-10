@@ -18,7 +18,8 @@ import javax.smartcardio.CardException;
 import java.security.SecureRandom;
 import java.security.Signature;
 import java.util.Arrays;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 
 
 public class ShopController {
@@ -63,7 +64,7 @@ public class ShopController {
     }
     @FXML
     private void smallPack() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, Exception {
-        if(authRSA()){
+        if(showPasswordDialog()&&authRSA()){
         App.addQuartz(3);
         Integer amount = App.getQuartz();
         SQField.setText(String.valueOf(amount));
@@ -74,7 +75,7 @@ public class ShopController {
     }
     @FXML
     private void midPack() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, Exception {
-        if(authRSA()){
+        if(showPasswordDialog()&&authRSA()){
         App.addQuartz(15);
         Integer amount = App.getQuartz();
         SQField.setText(String.valueOf(amount));
@@ -84,7 +85,7 @@ public class ShopController {
     }
     @FXML
     private void bigPack() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, Exception {
-        if(authRSA()){
+        if(showPasswordDialog()&&authRSA()){
         App.addQuartz(30);
         Integer amount = App.getQuartz();
         SQField.setText(String.valueOf(amount));
@@ -147,12 +148,49 @@ public class ShopController {
     }
     private boolean verifySignature(byte[] challenge, byte[] signedChallenge, PublicKey storedPublicKey) throws Exception {
     // Initialize the Signature object with SHA256withRSA
-    Signature signature = Signature.getInstance("SHA256withRSA"); 
+    Signature signature = Signature.getInstance("SHA1withRSA"); 
     signature.initVerify(storedPublicKey);
     signature.update(challenge);
     System.out.println("Challenge verification done.");
     // Verify if the signature is correct
     return signature.verify(signedChallenge);
 }
+    private boolean showPasswordDialog() {
+            // Create the dialog
+            Dialog<String> dialog = new Dialog<>();
+            dialog.setTitle("Authentication");
+            dialog.setHeaderText("Please enter your PIN to proceed.");
 
+            // Set the button types
+            ButtonType loginButtonType = new ButtonType("Authenticate", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+            // Create the password field
+            PasswordField passwordField = new PasswordField();
+            passwordField.setPromptText("123456");
+
+            // Layout
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(10);
+            grid.add(new Label("PIN:"), 0, 0);
+            grid.add(passwordField, 1, 0);
+
+            dialog.getDialogPane().setContent(grid);
+
+            // Convert the result to the password
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == loginButtonType) {
+                    return passwordField.getText();
+                }
+                return null;
+            });
+
+            // Show the dialog and wait for the response
+            String password = dialog.showAndWait().orElse(null);
+            if(password == null){
+                return false;
+            }
+            return password.length() == 6 && App.verifyPIN(password);
+        }
 }
